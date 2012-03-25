@@ -1,0 +1,10 @@
+BODY {  padding: 15px; background: #fff url(../images/bg.png) repeat-x top left; }
+A { color: #444; text-decoration:none; }
+A:hover { color: #E76200; }
+H1 { color: #000; font-size: 1.8em; }
+H2 { font-size: 1.4em; color:#E76200; border-bottom: 1px solid #ddd; font-weight: normal; letter-spacing: 0.03em; text-transform: uppercase; }
+H4 { font-size: 1.2em; color:#E76200; font-weight: normal; letter-spacing: 0.03em; text-transform: uppercase; }
+OL,UL,LI { padding: 0px; margin: 0px; }
+PRE { background-color: #fff; border: 1px dotted #ddd; padding: 6px; }
+
+.edit_panel { background-color:#fafafa; border: 1px solid #ddd; }

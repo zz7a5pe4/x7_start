@@ -1,0 +1,78 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>X7 Setup</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<link rel="stylesheet" type="text/css" href="/static/css/progress/reset.css"/>
+<link rel="stylesheet" type="text/css" href="/static/css/progress/base.css"/>
+<link rel="stylesheet" type="text/css" href="/static/css/progress/template.css"/>
+<link rel="stylesheet" type="text/css" href="/static/css/progress/form.css"/>
+<link rel="stylesheet" type="text/css" href="/static/css/progress/custom.css" />
+<script type="text/javascript" src="/static/js/jquery-1.7.min.js"></script>
+<script type="text/javascript" src="/static/js/jquery.progressbar.js"></script>
+<script type="text/javascript" src="/static/js/jquery.timers.js"></script>
+<script type="text/javascript">
+	var i = 0;
+	var ok = false
+	
+	$(document).ready(function() {
+		$("#progressbar").progressBar(65, { showText: true, barImage: '/static/images/progressbg_red.gif'} );
+		$(this).oneTime( 1000 , function(){
+			getMsg();
+		});
+	});
+	
+	function process( json ){
+		
+		var i = 0;
+		var msg;
+		for( i = 0; i<json.length; i++ ){
+			msg = json[i];
+			if( msg.type  == "log" ){
+				$("#console").append( msg.mesg + '<br />');	
+				$("#console")[0].scrollTop = $("#console")[0].scrollHeight;	
+			}else if ( msg.type == "prog" ){				
+				$("#progressbar").progressBar(msg.mesg );
+			}			
+		}
+		
+		
+		$(this).oneTime( 1000 , function(){
+			getMsg();
+		}); 
+     }
+	
+	function getMsg(){
+		jQuery.ajax({
+			url:'/init/get_progress',
+			type:'get',
+			dataType:'text',
+			success:function(retData, status) {
+			    //alert( retData );
+			    var obj = jQuery.parseJSON( retData ); 
+			    process( obj )
+			     	              
+			},
+			error:function(XMLHttpRequest,textStatus) {                
+			    //alert('call ajax error');
+			}
+		});
+	}
+</script>
+</head>
+<body>
+	<div id="content">
+		<img src="/static/images/X7cloud_logo.png" alt="X7 Cloud. Better && Faster" title="X7 Cloud. Better && Faster" />
+		<h1>X7 Setup Progress</h1>
+		<div class="contentblock">
+			<table>
+				<tr>
+					<td>Complete:&nbsp;</td>
+					<td><span class="progressBar" id="progressbar">75%</span></td>
+				</tr>
+			</table>
+			<div id="console"></div>
+		</div>
+	</div>
+</body>
+</html>

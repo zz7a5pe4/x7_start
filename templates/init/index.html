@@ -1,0 +1,112 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>X7 Setup</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="description" content="Fancy Sliding Form with jQuery" />
+<meta name="keywords" content="jquery, form, sliding, usability, css3, validation, javascript"/>
+<link rel="stylesheet" href="/static/css/style.css" type="text/css" media="screen"/>
+<script type="text/javascript" src="/static/js/jquery-1.7.min.js"></script>
+<script type="text/javascript" src="/static/js/sliding.form.js"></script>
+</head>
+<body>
+	<div><span class="reference"></span></div>
+	<div id="content">
+		<img src="/static/images/X7cloud_logo.png" alt="X7 Cloud. Better && Faster" title="X7 Cloud. Better && Faster" />
+		<h1>X7 Setup init config</h1>
+		<div id="wrapper">
+			<div id="steps">
+				<form id="paramForm" name="paramForm" action="/init/submit_env" method="post">
+					<fieldset class="step">
+						<legend>Host</legend>                            
+						<p>
+						    <label for="HOST_IP">Server Host IP</label>
+						    <input id="HOST_IP" name="HOST_IP"  placeholder="e.g. 192.168.1.100" value="192.168.1.100" type="ip" />
+						</p>
+						<p>
+						    <label for="MULTI_HOST">MULTI HOST</label>
+						    <select id="MULTI_HOST" name="MULTI_HOST">
+						        <option value="1" selected>Yes</option>
+						        <option value="0">No</option>
+						    </select>
+						</p>
+						<p>
+						    <label for="GLANCE_HOSTPORT">Server Host IP</label>
+						    <input id="GLANCE_HOSTPORT" name="GLANCE_HOSTPORT" value="9292" />
+						</p>
+					</fieldset>
+					<fieldset class="step">
+						<legend>Network</legend>
+						<p>
+						    <label for="FLAT_INTERFACE">FLAT INTERFACE</label>
+						    <input id="FLAT_INTERFACE" name="FLAT_INTERFACE" placeholder="e.g. eth0" value="eth0" type="text" AUTOCOMPLETE=OFF />
+						</p>
+						<p>
+						    <label for="FIXED_RANGE">FIXED RANGE</label>
+						    <input id="FIXED_RANGE" name="FIXED_RANGE" placeholder="e.g. 10.10.10.0/24" value="10.10.10.0/24" type="text" AUTOCOMPLETE=OFF />
+						</p>
+						<p>
+						    <label for="FIXED_NETWORK_SIZE">FIXED NETWORK SIZE</label>
+						    <input id="FIXED_NETWORK_SIZE" name="FIXED_NETWORK_SIZE" placeholder="e.g. 256" value="256" type="text" AUTOCOMPLETE=OFF />
+						</p>
+						<p>
+						    <label for="FLOATING_RANGE">FLOATING RANGE</label>
+						    <input id="FLOATING_RANGE" name="FLOATING_RANGE" placeholder="e.g. 192.168.1.128/24" value="192.168.1.1/24" type="text" AUTOCOMPLETE=OFF />
+						</p>
+					</fieldset>
+					<fieldset class="step">
+						<legend>Database</legend>
+						<p>
+						    <label for="MYSQL_HOST">MYSQL SERVER ADDRESS</label>
+						    <input id="MYSQL_HOST" name="MYSQL_HOST" type="text" placeholder="e.g. 192.168.1.100" value="192.168.1.100" AUTOCOMPLETE=OFF />
+						</p>
+						<p>
+						    <label for="MYSQL_PASSWORD">MYSQL ROOT PASSWORD</label>
+						    <input id="MYSQL_PASSWORD" name="MYSQL_PASSWORD" type="text" value="root" AUTOCOMPLETE=OFF />
+						</p>
+					</fieldset>
+					<fieldset class="step">
+						<legend>Security</legend>
+						<p>
+						    <label for="SERVICE_TOKEN">SERVICE TOKEN</label>
+						    <input id="SERVICE_TOKEN" name="SERVICE_TOKEN" type="text" value="xyzpdqlazydog" AUTOCOMPLETE=OFF />
+						</p>                          
+						<p>
+						    <label for="RABBIT_PASSWORD">RABBIT PASSWORD</label>
+						    <input id="RABBIT_PASSWORD" name="RABBIT_PASSWORD" type="text" value="tomato" AUTOCOMPLETE=OFF />
+						</p>
+						<p>
+						    <label for="ADMIN_PASSWORD">Dashboard Admin Password</label>
+						    <input id="ADMIN_PASSWORD" name="ADMIN_PASSWORD" type="text" value="tomato" AUTOCOMPLETE=OFF />
+						</p>
+					</fieldset>
+					<fieldset class="step">
+						<legend>Confirm</legend>
+						<p class="confirm_info">
+							Please press the Submit Button if all the steps have a green checkmark icon.
+							Otherwise please check if there is a missing field or filled out with invalid data.
+							<!--
+							Everything in the form was correctly filled if all the steps have a green checkmark
+							icon. A red checkmark icon indicates that some field is missing or filled out with
+							invalid data. In this last step the user can confirm the submission of the form.
+							-->
+						</p>
+						<p class="submit">
+							<button id="registerButton" type="submit">Submit</button>
+						</p>
+					</fieldset>
+				</form>
+			</div>
+			<div id="navigation" style="display:none;">
+				<ul>
+					<li class="selected"><a href="#">Host</a></li>
+					<li><a href="#">Network</a></li>
+					<li><a href="#">Database</a></li>
+					<li><a href="#">Security</a></li>
+					<li><a href="#">Submit</a></li>
+				</ul>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

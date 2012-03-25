@@ -1,0 +1,13 @@
+div.controlHolder { padding: 5px 10px; margin-bottom: 5px; }
+div.controlHolder .clear { height: 5px; clear: both; }
+div.controlHolder .label { padding-top: 5px; width: 200px; vertical-align: top; display: inline-block; *display: inline; zoom: 1; }
+div.controlHolder .label em { float: right; font-style:normal; font-weight:bold; color:#990000; font-size:15px; padding-right: 10px; }
+div.controlHolder .control { padding-top: 5px; width: 70%;  vertical-align: top; display: inline-block; *display: inline; zoom: 1; }
+div.controlHolder .hint { color:#777; font-size:0.9em; margin:0; }
+div.controlHolder.focused { background-color: #EBEFF9; border-top: 1px solid #c3d9ff; border-bottom: 1px solid #c3d9ff; padding: 4px 10px;}
+div.controlHolder.error { background-color:#FFDFDF; border-top: 2px solid #DF7D7D; border-bottom: 2px solid #DF7D7D; }
+div.controlHolder.error p { background-color: #FFBFBF; padding: 4px; color: #663311; font-weight: bold; }
+div.controlHolder .control .text  { width: 350px; }
+div.controlHolder .control .textarea  { width: 500px; height: 160px; }
+div.controlHolder .control LABEL  { padding-right: 20px; }
+div.buttonHolder { padding: 10px 0px 10px 210px; }
