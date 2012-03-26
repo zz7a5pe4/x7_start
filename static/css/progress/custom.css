@@ -8,7 +8,7 @@ body{
 #content {
 	margin:15px auto;
     text-align:center;
-    width:600px;
+    width:960px;
     height:100%;
     position:relative;
     margin-top: 0px;
@@ -33,7 +33,7 @@ body{
     border-radius:10px;
     border:2px solid #fff;
     background-color:#f9f9f9;
-    width:600px;
+    width:960px;
     overflow:hidden;
     text-align: left;
 }
