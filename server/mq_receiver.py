@@ -1,6 +1,9 @@
+#!/usr/bin/python
+
 from  x7_mq import MqServer
 import simplejson
 import sys, os
+import subprocess
 
 def handle_message( pkg, message):
     print("Received message: %r" % (pkg, ))
@@ -11,11 +14,14 @@ def handle_message( pkg, message):
     if os.path.isfile('localrc'):
         os.remove('localrc')
     
-    file = open ( 'localrc', 'w' )
-    for k in params.keys():
-        file.write( "%s=%s \n"  % (k,params[k]) )
+    eth_interface = params.get("FLAT_INTERFACE","eth0")
+    subprocess.Popen(["./inst.sh", eth_interface])
+    exit(-1);
+    #file = open ( 'localrc', 'w' )
+    #for k in params.keys():
+    #    file.write( "%s=%s \n"  % (k,params[k]) )
 
-    file.close()
+    #file.close()
     
     
 if __name__ == '__main__':
@@ -23,12 +29,5 @@ if __name__ == '__main__':
     
     mq_server = MqServer( handle_message, w2sDict )
     mq_server.connect()
-    message = mq_server.run()
+    message = mq_server.run(once=True)
 
-    
-
-  
-
-
-
-                    
