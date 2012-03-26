@@ -2,7 +2,7 @@
 #!/usr/bin/python/
 from django.shortcuts import render_to_response
 from params import Params
-from server.x7_mq import MqClient,MqReader
+from server.x7_mq import MqClient,MqReader,MqServer
 import simplejson
 
 import datetime
@@ -17,7 +17,9 @@ def submit_env(request):
     client = MqClient( w2sDict )
     client.connect()
     client.send( params.json() )      
-   
+    s2wDict = { 'X7_Q':'X7_Q_S2W', 'X7_E':'X7_E_S2W', 'X7_RK':'X7_PK_S2W' }
+    srv = MqServer(None,s2wDict)
+    srv.connect()
     return render_to_response('init/progress.html')
 
 
