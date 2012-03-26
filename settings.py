@@ -1,4 +1,4 @@
-# Django settings for x7_manage project.
+# Django settings for x7_start project.
 import os
 
 ROOT_PATH = os.path.dirname(os.path.abspath(__file__))
@@ -96,7 +96,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfResponseMiddleware',
 )
 
-ROOT_URLCONF = 'x7_manage.urls'
+ROOT_URLCONF = 'x7_start.urls'
 
 
 INSTALLED_APPS = (

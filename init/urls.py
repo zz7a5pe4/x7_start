@@ -9,8 +9,8 @@ urlpatterns = patterns('',
     (r'^get_progress', 'init.views.get_progress'),
     (r'^$', 'init.views.home'),
     # Examples:
-    # url(r'^$', 'x7_manage.views.home', name='home'),
-    # url(r'^x7_manage/', include('x7_manage.foo.urls')),
+    # url(r'^$', 'x7_start.views.home', name='home'),
+    # url(r'^x7_start/', include('x7_start.foo.urls')),
 
     # Uncomment the admin/doc line below to enable admin documentation:
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
