@@ -19,12 +19,18 @@ class MqServer( object ):
             self.kwargs = kwargs
         else:
             self.kwargs = MqDict
+            
     def create_queue(self, hostname="localhost", userid="guest", password="guest", virtual_host="/"): 
         self.conn = BrokerConnection(hostname, userid,password, virtual_host )   
         #define Web2Server exchange
         exchange = Exchange(self.kwargs["X7_E"], type="direct")
         self.queue = Queue(self.kwargs["X7_Q"], exchange, routing_key=self.kwargs["X7_RK"])    
         channel = self.conn.channel()
+        consumer = Consumer(channel, self.queue, callbacks=[self.callback])
+        consumer.consume()
+        self.conn.connect()
+
+        
         
     def connect(self, hostname="localhost", userid="guest", password="guest", virtual_host="/"): 
         self.conn = BrokerConnection(hostname, userid,password, virtual_host )   
