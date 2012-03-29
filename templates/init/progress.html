@@ -14,9 +14,9 @@
 <script type="text/javascript">
 	var i = 0;
 	var ok = false
-	
+
 	$(document).ready(function() {
-		$("#progressbar").progressBar(65, { showText: true, barImage: '/static/images/progressbg_red.gif'} );
+		$("#progressbar").progressBar(0, { showText: true, barImage: '/static/images/progressbg_red.gif'} );
 		$(this).oneTime( 1000 , function(){
 			getMsg();
 		});
@@ -33,7 +33,13 @@
 				$("#console")[0].scrollTop = $("#console")[0].scrollHeight;	
 			}else if ( msg.type == "prog" ){				
 				$("#progressbar").progressBar(msg.mesg );
-			}			
+			}else if( msg.type == "cmd" ){
+				if( msg.mesg == "complete" ){
+					url = "http://" + document.domain;			
+					window.location.href = url;
+				}
+			}		
+			
 		}
 		
 		
