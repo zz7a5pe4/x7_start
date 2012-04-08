@@ -53,6 +53,7 @@
 			url:'/init/get_progress',
 			type:'get',
 			dataType:'text',
+			cache: false,
 			success:function(retData, status) {
 			    //alert( retData );
 			    var obj = jQuery.parseJSON( retData ); 
