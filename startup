@@ -1,0 +1,36 @@
+#!/bin/bash -e
+
+#source ./imroot
+
+X7WORKDIR=`pwd`
+CONFDIR=$X7WORKDIR/conf
+CURWD=$X7WORKDIR
+
+# download dependency for git, rabbitmq, etc
+sudo apt-get update
+sudo apt-get install -y --assume-yes approx
+
+# approx setup
+cp -f $CONFDIR/etc/approx/approx.conf.template $CONFDIR/etc/approx/approx.conf
+cp -f $CONFDIR/etc/apt/sources.list.template $CONFDIR/etc/apt/sources.list
+sed -i "s|%HOSTADDR%|127.0.0.1|g" $CONFDIR/etc/apt/sources.list
+if [ ! -f /etc/apt/sources.list.backup ]; then
+    sudo mv -f /etc/apt/sources.list /etc/apt/sources.list.backup
+fi
+sudo cp -f $CONFDIR/etc/apt/sources.list /etc/apt/sources.list 
+sudo cp -f $CONFDIR/etc/approx/approx.conf /etc/approx/approx.conf
+
+# approx through inetd
+sudo inetd
+sudo apt-get update
+
+# installn dependent package
+sudo apt-get install -y --assume-yes git rabbitmq-server  python-kombu python-django python-paramiko
+# setup rabbitmq
+sudo rabbitmqctl  -q change_password guest guest
+
+./mq_receiver.py &
+# start x7web here!!
+echo "open browser with url http://127.0.0.1:8000/init"
+#firefox 127.0.0.1:8000/init
+python x7_start/manage.py runserver 0.0.0.0:8000 1>/dev/null 2>/dev/null

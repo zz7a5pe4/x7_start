@@ -1,0 +1,31 @@
+#!/bin/bash
+
+if [ -z "$MYID" ]; then
+    export MYID=`whoami`
+fi 
+
+chk_root () {
+
+  if [ ! $( id -u ) -eq 0 ]; then
+    echo "Please enter root's password."
+    exec sudo -S -E su -m -c "$0" # Call this prog as root
+    exit ${?}  # sice we're 'execing' above, we wont reach this exit
+               # unless something goes wrong.
+  fi
+
+}
+
+chk_root
+
+echo ${MYID:?"need set MYID first"}
+grep "^$MYID ALL=(ALL) NOPASSWD: ALL$" /etc/sudoers > /dev/null
+
+if [ "$?" -ne "0" ];
+  then
+    chmod +w /etc/sudoers
+    echo "$MYID ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+    chmod -w /etc/sudoers
+  else
+    echo "already in sudoer"
+fi
+

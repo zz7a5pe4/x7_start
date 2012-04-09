@@ -1,0 +1,36 @@
+#!/bin/bash -e
+
+#host cloudnode-1 {hardware ethernet 5c:26:0a:33:0d:71;fixed-address 192.168.1.4;}
+
+if [ $# != 2 ]; then
+    echo "usage: $0 macaddr ipaddr"
+    exit 1
+fi
+
+if [ ! -f /etc/dhcp/dhcpd.conf ]; then
+    echo "install dhcpd first"
+    exit -1
+fi
+
+#`echo $1 | tr [a-z] [A-Z]`
+
+grep -i "$1" /etc/dhcp/dhcpd.conf  > /dev/null && true
+if [ $? -ne "0" ]; then
+  # update dhcpd and hosts
+  lasthost=`grep "cloudnode-" /etc/dhcp/dhcpd.conf | tail -n 1 |  awk '{ print $2}' `
+  x=`echo $lasthost | sed "s|cloudnode-||"`
+  let "y = x+1"
+
+  echo "host cloudnode-$y {hardware ethernet $1;fixed-address $2;}" | sudo tee -a /etc/dhcp/dhcpd.conf > /dev/null
+  echo "$2    cloudnode-$y" | sudo tee -a /etc/hosts > /dev/null
+else
+  echo "already in dhcpd.conf"
+fi
+
+HEXNAME=`printf '%02X' ${2//./ }`
+
+sudo ln -s ../boot-screens/syslinux.cfg /srv/tftp/vai/pxelinux.cfg/$HEXNAME && true
+sudo /etc/init.d/isc-dhcp-server restart
+sudo /etc/init.d/tftpd-hpa restart
+
+./comp_setup.py $1 &

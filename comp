@@ -1,0 +1,8 @@
+#!/bin/bash
+
+#/bin/bash
+
+HOSTADDR=$(ifconfig | grep -A1 eth0 | grep 'inet addr:' |cut -d: -f2 | awk '{ print $1}')
+rm -f ~/.ssh/known_hosts
+ssh -o StrictHostKeyChecking=no -l stack $1 "cd /home/stack/x7 && git fetch git://github.com/zz7a5pe4/x7.git demo_mig && git checkout demo_mig"
+ssh -o StrictHostKeyChecking=no -l stack $1 "cd /home/stack/x7 && ./mk client && cd /home/stack/x7/devstack && SERVERADDR=$HOSTADDR INTERFACE=eth0 ./init.sh cln && ./stack.sh"

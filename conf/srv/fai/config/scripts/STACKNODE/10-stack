@@ -1,0 +1,24 @@
+#! /bin/bash
+
+# (c) Thomas Lange, 2001-2008, lange@debian.org
+
+error=0 ; trap "error=$((error|1))" ERR
+
+# add a demo user account
+if ! $ROOTCMD getent passwd stack ; then
+    $ROOTCMD adduser --disabled-login --gecos "node user" stack
+#    echo "stack:$ROOTPW" | $ROOTCMD chpasswd --encrypted
+    $ROOTCMD usermod -p "$ROOTPW" stack
+fi
+
+git clone git://github.com/zz7a5pe4/x7.git /target/home/stack/x7
+echo "stack ALL=(ALL) NOPASSWD: ALL" >> /target/etc/sudoers
+
+mkdir -p /target/home/stack/.ssh
+cp -f /root/id_rsa.pub /target/home/stack/.ssh/authorized_keys
+mkdir -p /target/home/stack/x7/cache
+cp -rf /root/pip /target/home/stack/x7/cache/
+cp -rf /root/stack /target/home/stack/x7/cache/
+chown -R 1000:1000 /target/home/stack
+
+exit $error

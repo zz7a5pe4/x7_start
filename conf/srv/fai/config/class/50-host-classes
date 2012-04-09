@@ -1,0 +1,18 @@
+#! /bin/bash
+
+# assign classes hosts
+
+# use a list of classes for our demo machine
+case $HOSTNAME in
+    faiserver)
+	echo "FAIBASE FAISERVER" ;;
+    cloudnode*)
+	echo "FAIBASE DHCPC STACKNODE" ;;
+    gnomehost*)
+	echo "FAIBASE DHCPC XORG GNOME";;
+    *)
+	echo "FAIBASE DHCPC" ;;
+esac
+
+(ifclass I386 || ifclass AMD64) && echo GRUB_PC
+exit 0

@@ -1,0 +1,65 @@
+d-i mirror/protocol string http
+d-i mirror/country string manual
+d-i mirror/http/hostname string %HOSTADDR%:8888
+d-i mirror/http/directory string /ubuntu/
+d-i mirror/http/proxy string
+
+d-i partman-auto/init_automatically_partition select Guided - use entire disk
+d-i partman/confirm_write_new_label boolean true
+d-i partman/confirm boolean true
+d-i partman-auto/method string regular
+d-i partman/choose_partition select Finish partitioning and write changes to disk
+
+d-i clock-setup/utc boolean true
+
+# You may set this to any valid setting for $TZ; see the contents of
+# /usr/share/zoneinfo/ for valid values.
+d-i time/zone string Asia/Chongqing
+
+### Apt setup
+# You can choose to install non-free and contrib software.
+#d-i apt-setup/non-free boolean true
+#d-i apt-setup/contrib boolean true
+# Uncomment this if you don't want to use a network mirror.
+d-i apt-setup/use_mirror boolean false
+# Uncomment this to avoid adding security sources, or
+# add a hostname to use a different server than security.debian.org.
+d-i apt-setup/security_host string
+
+# Additional repositories, local[0-9] available
+#d-i apt-setup/local0/repository string \
+#       deb http://local.server/debian stable main
+#d-i apt-setup/local0/comment string local server
+# Enable deb-src lines
+#d-i apt-setup/local0/source boolean true
+# URL to the public key of the local repository; you must provide a key or
+# apt will complain about the unauthenticated repository and so the
+# sources.list line will be left commented out
+#d-i apt-setup/local0/key string http://local.server/key
+
+### Account setup
+# Skip creation of a root account (normal user account will be able to
+# use sudo).
+#d-i passwd/root-login boolean false
+# Alternatively, to skip creation of a normal user account.
+#d-i passwd/make-user boolean false
+
+# Root password, either in clear text
+d-i passwd/root-password password r00tme
+d-i passwd/root-password-again password r00tme
+# or encrypted using an MD5 hash.
+#d-i passwd/root-password-crypted password [MD5 hash]
+
+# To create a normal user account.
+d-i passwd/user-fullname string stack stack
+d-i passwd/username string stack
+# Normal user's password, either in clear text
+d-i passwd/user-password password vai123
+d-i passwd/user-password-again password vai123
+# or encrypted using an MD5 hash.
+#d-i passwd/user-password-crypted password [MD5 hash]
+d-i user-setup/encrypt-home boolean false
+tasksel tasksel/first   select  OpenSSH server
+
+d-i grub-installer/only_debian boolean true
+d-i finish-install/reboot_in_progress note 

@@ -1,0 +1,33 @@
+#!/bin/bash -e
+
+echo ${INTERFACE:?"need set INTERFACE first"}
+
+HOSTADDR=$(ifconfig | grep -A1 "$INTERFACE" | grep 'inet addr:' |cut -d: -f2 | awk '{ print $1}')
+BRDADDR=$(ifconfig | grep -A1 "$INTERFACE" | grep 'inet addr:' |cut -d: -f3 | awk '{ print $1}')
+MASKADDR=$(ifconfig | grep -A1 "$INTERFACE" | grep 'inet addr:' |cut -d: -f4 | awk '{ print $1}')
+GATEWAY=$(route -n | grep 'UG[ \t]' | awk '{print $2}')
+HOSTNAME=$(hostname -s)
+
+echo $HOSTADDR
+echo $BRDADDR
+echo $MASKADDR
+echo $GATEWAY
+echo $HOSTNAME
+
+# split ip
+
+for foo in 1 2 3 4; do
+    IPADDR[$foo]=`echo ${HOSTADDR}|cut -d"." -f$foo`
+done
+
+#split mask
+
+for foo in 1 2 3 4; do
+    MASK[$foo]=`echo ${MASKADDR}|cut -d"." -f$foo`
+	NETADDR[$foo]=$[${IPADDR[$foo]}&${MASK[$foo]}]
+done
+
+
+NETWORK="${NETADDR[1]}.${NETADDR[2]}.${NETADDR[3]}.${NETADDR[4]}"
+echo $NETWORK
+
