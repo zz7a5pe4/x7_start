@@ -91,7 +91,14 @@ fi
 cd $CURWD/www/
 python -m SimpleHTTPServer 8888 &
 
+#devstack & openstack packages
+mkdir -p $CURWD/cache
+wget https://github.com/downloads/zz7a5pe4/x7_start/devstack.tar.gz -O $CURWD/cache/devstack.tar.gz
+wget https://github.com/downloads/zz7a5pe4/x7_start/stack.tar.gz -O $CURWD/cache/stack.tar.gz
 
+tar xzf $CURWD/cache/devstack.tar.gz -C $CURWD/
+sudo tar xzf $CURWD/cache/stack.tar.gz -C /opt/
+sudo chown -R $MYID:$MYID /opt/stack
 
 # clone x7 stack from github
 #git clone git://github.com/zz7a5pe4/x7.git || true 
@@ -161,7 +168,7 @@ fi
 # openstack core
 # git clone git://github.com/zz7a5pe4/x7_dep.git || true
 # sudo cp -rf x7_dep /opt/stack
-# sudo chown -R $MYID:$MYID /opt/stack
+
 
 mkdir -p $CURWD/log/
 cp -f $CURWD/localrc_server_template $CURWD/devstack/localrc
