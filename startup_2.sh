@@ -26,6 +26,7 @@ echo ${NETWORK:?"empty network"}
 export X7WORKDIR=`pwd`
 CONFDIR=$X7WORKDIR/conf
 CURWD=$X7WORKDIR
+MYID=`whoami`
 
 # ntp server
 sudo apt-get install -y ntp
@@ -60,8 +61,8 @@ sed -i "s|%HOSTADDR%|$HOSTADDR|g" $CONFDIR/srv/tftp/vai/ubuntu-installer/amd64/b
 sudo cp -rf $CONFDIR/srv/tftp/vai /srv/tftp/
 
 # preseed
-cp -f $CRUWD/www/preseed.cfg.template $CRUWD/www/preseed.cfg
-sed -i "s|%HOSTADDR%|$HOSTADDR|g" $CRUWD/www/preseed.cfg
+cp -f $CURWD/www/preseed.cfg.template $CURWD/www/preseed.cfg
+sed -i "s|%HOSTADDR%|$HOSTADDR|g" $CURWD/www/preseed.cfg
 
 
 # hosts config
@@ -93,12 +94,24 @@ python -m SimpleHTTPServer 8888 &
 
 #devstack & openstack packages
 mkdir -p $CURWD/cache
-wget https://github.com/downloads/zz7a5pe4/x7_start/devstack.tar.gz -O $CURWD/cache/devstack.tar.gz
-wget https://github.com/downloads/zz7a5pe4/x7_start/stack.tar.gz -O $CURWD/cache/stack.tar.gz
-
+if [ ! -f $CURWD/cache/devstack.tar.gz ]; then
+  wget https://github.com/downloads/zz7a5pe4/x7_start/devstack_new.tar.gz -O $CURWD/cache/devstack.tar.gz
+fi
+rm -rf $CURWD/devstack
 tar xzf $CURWD/cache/devstack.tar.gz -C $CURWD/
-sudo tar xzf $CURWD/cache/stack.tar.gz -C /opt/
+#wget https://github.com/downloads/zz7a5pe4/x7_start/stack.tar.gz -O $CURWD/cache/stack.tar.gz
+
+
+if [ ! -d  $CURWD/stack ]; then
+  git clone git://github.com/zz7a5pe4/x7_dep.git $CURWD/stack
+  rm -f $CURWD/cache/stack.tar.gz
+  tar czf $CURWD/cache/stack.tar.gz --exclude .git $CURWD/stack
+fi
+sudo rm -rf /opt/stack
+sudo cp -rf stack /opt
 sudo chown -R $MYID:$MYID /opt/stack
+cd /opt/stack/x7_dashboard 
+sudo python setup.py develop
 
 # clone x7 stack from github
 #git clone git://github.com/zz7a5pe4/x7.git || true 
@@ -136,24 +149,19 @@ if [ -d /media/x7_usb/ ]; then
   tar xzf /media/x7_usb/x7_cache/passlib-1.5.3.tar.gz -C $CURWD/cache/pip/
   tar xzf /media/x7_usb/x7_cache/django-nose-selenium-0.7.3.tar.gz -C $CURWD/cache/pip/
 else
-  wget http://launchpad.net/cirros/trunk/0.3.0/+download/cirros-0.3.0-x86_64-uec.tar.gz -O $CURWD/cache/img/cirros-0.3.0-x86_64-uec.tar.gz
-  wget https://github.com/downloads/jkerng/x7/pika-0.9.5.tar.gz -O $CURWD/cache/pip/pika-0.9.5.tar.gz
-  wget https://github.com/downloads/jkerng/x7/passlib-1.5.3.tar.gz -O $CURWD/cache/pip/passlib-1.5.3.tar.gz
-  wget https://github.com/downloads/jkerng/x7/django-nose-selenium-0.7.3.tar.gz -O $CURWD/cache/pip/django-nose-selenium-0.7.3.tar.gz
-  wget https://github.com/downloads/jkerng/x7/pam-0.1.4.tar.gz -O $CURWD/cache/pip/pam-0.1.4.tar.gz
-  wget https://github.com/downloads/jkerng/x7/pycrypto-2.3.tar.gz -O $CURWD/cache/pip/pycrypto-2.3.tar.gz
+  [ -f $CURWD/cache/img/cirros-0.3.0-x86_64-uec.tar.gz ] || wget http://launchpad.net/cirros/trunk/0.3.0/+download/cirros-0.3.0-x86_64-uec.tar.gz -O $CURWD/cache/img/cirros-0.3.0-x86_64-uec.tar.gz
+  [ -f $CURWD/cache/pip/pika-0.9.5.tar.gz ] || wget https://github.com/downloads/jkerng/x7/pika-0.9.5.tar.gz -O $CURWD/cache/pip/pika-0.9.5.tar.gz
+  [ -f $CURWD/cache/pip/passlib-1.5.3.tar.gz ] || wget https://github.com/downloads/jkerng/x7/passlib-1.5.3.tar.gz -O $CURWD/cache/pip/passlib-1.5.3.tar.gz
+  [ -f $CURWD/cache/pip/django-nose-selenium-0.7.3.tar.gz ] || wget https://github.com/downloads/jkerng/x7/django-nose-selenium-0.7.3.tar.gz -O $CURWD/cache/pip/django-nose-selenium-0.7.3.tar.gz
+  [ -f $CURWD/cache/pip/pam-0.1.4.tar.gz ] || wget https://github.com/downloads/jkerng/x7/pam-0.1.4.tar.gz -O $CURWD/cache/pip/pam-0.1.4.tar.gz
+  [ -f $CURWD/cache/pip/pycrypto-2.3.tar.gz ] || wget https://github.com/downloads/jkerng/x7/pycrypto-2.3.tar.gz -O $CURWD/cache/pip/pycrypto-2.3.tar.gz
 fi
 
 tar xzf $CURWD/cache/pip/pika-0.9.5.tar.gz -C $CURWD/cache/pip/
-rm -f $CURWD/cache/pip/pika-0.9.5.tar.gz
 tar xzf $CURWD/cache/pip/passlib-1.5.3.tar.gz -C $CURWD/cache/pip/
-rm -f $CURWD/cache/pip/passlib-1.5.3.tar.gz
 tar xzf $CURWD/cache/pip/django-nose-selenium-0.7.3.tar.gz -C $CURWD/cache/pip/
-rm -f $CURWD/cache/pip/django-nose-selenium-0.7.3.tar.gz
 tar xzf $CURWD/cache/pip/pam-0.1.4.tar.gz -C $CURWD/cache/pip/
-rm -f $CURWD/cache/pip/pam-0.1.4.tar.gz
 tar xzf $CURWD/cache/pip/pycrypto-2.3.tar.gz -C $CURWD/cache/pip/
-rm -f $CURWD/cache/pip/pycrypto-2.3.tar.gz
 chmod -R +r $CURWD/cache/pip || true
 
 if [ -d $CURWD/cache/pip ];then
@@ -164,10 +172,7 @@ if [ -d $CURWD/cache/pip ];then
   done
 fi
 
-
-# openstack core
-# git clone git://github.com/zz7a5pe4/x7_dep.git || true
-# sudo cp -rf x7_dep /opt/stack
+tar czf $CURWD/cache/pip.tar.gz --exclude "*.tar.gz" $CURWD/cache/pip
 
 
 mkdir -p $CURWD/log/
@@ -185,4 +190,7 @@ if [ "$?" -ne "0" ]; then
 fi
 ./stack.sh
 sudo mount -t nfs 127.0.0.1:/srv/instances /opt/stack/nova/instances
+cp -f $CURWD/localrc_compute_template $CURWD/localrc_compute
+sed -i "s|%HOSTADDR%|$SERVERADDR|g" $CURWD/localrc_compute
+
 exit 0

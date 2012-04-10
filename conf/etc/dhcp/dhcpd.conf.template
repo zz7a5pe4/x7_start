@@ -10,9 +10,10 @@ use-host-decl-names on;
 
 subnet %NETADDR% netmask %MASKADDR% {
    option routers %GATEWAY%;
+   option domain-name-servers %GATEWAY%
    server-name "%HOSTADDR%";
    next-server %HOSTADDR%;
-   filename "fai/pxelinux.0";
+   filename "vai/pxelinux.0";
 }
 
 # perl -ane ' {print "host atom {hardware ethernet $1;fixed-address atom}";}'

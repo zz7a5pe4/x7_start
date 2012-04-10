@@ -9,13 +9,14 @@ import time
 
 
 def main(co):
-    count = 10
+    count = 1024
+    time.sleep(300);
     while(count):
         p = subprocess.Popen(('nc -z {0} 22'.format(co)).split(),
 		                    shell=False,
 		                    stdout=subprocess.PIPE,
                             stderr=subprocess.PIPE)
-        stdout, stderr = p.communicate())
+        stdout, stderr = p.communicate()
         count -= 1;
         r = p.wait();
         print str(r)
@@ -29,15 +30,15 @@ def main(co):
         print "connecting failed"
         exit(-1)
     
-    s = ssh.Connection(host=co,username="stack",password="vai123",port=22)
-    s.put('stack.tar.gz')
-    s.put('devstack.tar.gz')
-    s.put('pip.tar.gz')
+    s = ssh.Connection(host=co,username="stack",password="vai12345",port=22)
+    s.put('cache/stack.tar.gz')
+    s.put('cache/devstack.tar.gz')
+    s.put('cache/pip.tar.gz')
     s.put('imroot')
     s.put('localrc_compute')
     s.put('start_compute.sh')
     s.execute("chmod +x imroot");
-    o = s.execute('echo vai123 | /home/stack/imroot')
+    o = s.execute('echo vai12345 | /home/stack/imroot')
     #print o
     s.execute("chmod +x start_compute.sh")
     o = s.execute('/home/stack/start_compute.sh')
@@ -47,5 +48,5 @@ def main(co):
 
 
 if __name__ == '__main__':
-    main("10.0.0.101")
+    main(sys.argv[1])
     sys.exit(0)

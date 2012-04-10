@@ -3,3 +3,8 @@
 cache
 log
 devstack
+localrc_compute
+stack/
+preseed.cfg
+ubuntu/
+

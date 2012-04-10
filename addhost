@@ -33,4 +33,4 @@ sudo ln -s ../boot-screens/syslinux.cfg /srv/tftp/vai/pxelinux.cfg/$HEXNAME && t
 sudo /etc/init.d/isc-dhcp-server restart
 sudo /etc/init.d/tftpd-hpa restart
 
-./comp_setup.py $1 &
+./comp_setup.py $2 &
