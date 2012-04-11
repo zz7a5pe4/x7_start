@@ -42,6 +42,6 @@ def get_progress( request ):
     #data['msg'] = 'hello world! ' + now.strftime("%Y-%m-%d %H:%M:%S")
     #data['progress'] = '50'
     json = simplejson.dumps( dataList )
-    print json
+    #print json
     return render_to_response("init/ajax.html", { 'json': json }  )
     
