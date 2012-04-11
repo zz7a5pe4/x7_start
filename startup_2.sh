@@ -1,7 +1,7 @@
 #!/bin/bash -x
 
 #source ./imroot
-
+set -e
 function trackme 
 {
     #echo "$@" >> ./$$.cmd.log
@@ -95,7 +95,7 @@ python -m SimpleHTTPServer 8888 &
 #devstack & openstack packages
 mkdir -p $CURWD/cache
 if [ ! -f $CURWD/cache/devstack.tar.gz ]; then
-  wget https://github.com/downloads/zz7a5pe4/x7_start/devstack_new.tar.gz -O $CURWD/cache/devstack.tar.gz
+  wget https://github.com/downloads/zz7a5pe4/x7_start/devstack.tar.gz -O $CURWD/cache/devstack.tar.gz
 fi
 rm -rf $CURWD/devstack
 tar xzf $CURWD/cache/devstack.tar.gz -C $CURWD/
@@ -108,7 +108,7 @@ if [ ! -d  $CURWD/stack ]; then
   tar czf $CURWD/cache/stack.tar.gz --exclude .git $CURWD/stack
 fi
 sudo rm -rf /opt/stack
-sudo cp -rf stack /opt
+sudo cp -rf $CURWD/stack /opt
 sudo chown -R $MYID:$MYID /opt/stack
 cd /opt/stack/x7_dashboard 
 sudo python setup.py develop
@@ -149,7 +149,7 @@ if [ -d /media/x7_usb/ ]; then
   tar xzf /media/x7_usb/x7_cache/passlib-1.5.3.tar.gz -C $CURWD/cache/pip/
   tar xzf /media/x7_usb/x7_cache/django-nose-selenium-0.7.3.tar.gz -C $CURWD/cache/pip/
 else
-  [ -f $CURWD/cache/img/cirros-0.3.0-x86_64-uec.tar.gz ] || wget http://launchpad.net/cirros/trunk/0.3.0/+download/cirros-0.3.0-x86_64-uec.tar.gz -O $CURWD/cache/img/cirros-0.3.0-x86_64-uec.tar.gz
+  #[ -f $CURWD/cache/img/cirros-0.3.0-x86_64-uec.tar.gz ] || wget http://launchpad.net/cirros/trunk/0.3.0/+download/cirros-0.3.0-x86_64-uec.tar.gz -O $CURWD/cache/img/cirros-0.3.0-x86_64-uec.tar.gz
   [ -f $CURWD/cache/pip/pika-0.9.5.tar.gz ] || wget https://github.com/downloads/jkerng/x7/pika-0.9.5.tar.gz -O $CURWD/cache/pip/pika-0.9.5.tar.gz
   [ -f $CURWD/cache/pip/passlib-1.5.3.tar.gz ] || wget https://github.com/downloads/jkerng/x7/passlib-1.5.3.tar.gz -O $CURWD/cache/pip/passlib-1.5.3.tar.gz
   [ -f $CURWD/cache/pip/django-nose-selenium-0.7.3.tar.gz ] || wget https://github.com/downloads/jkerng/x7/django-nose-selenium-0.7.3.tar.gz -O $CURWD/cache/pip/django-nose-selenium-0.7.3.tar.gz
@@ -163,6 +163,7 @@ tar xzf $CURWD/cache/pip/django-nose-selenium-0.7.3.tar.gz -C $CURWD/cache/pip/
 tar xzf $CURWD/cache/pip/pam-0.1.4.tar.gz -C $CURWD/cache/pip/
 tar xzf $CURWD/cache/pip/pycrypto-2.3.tar.gz -C $CURWD/cache/pip/
 chmod -R +r $CURWD/cache/pip || true
+
 
 if [ -d $CURWD/cache/pip ];then
   pippackages=`ls $CURWD/cache/pip`
@@ -183,7 +184,7 @@ sed -i "s|%HOSTADDR%|$HOSTADDR|g" localrc
 sed -i "s|%INTERFACE%|$INTERFACE|g" localrc
 sed -i "s|%BRDADDR%|$BRDADDR|g" localrc
 
-grep "add_nova_opt \"logdir=$CURWD/log\"" stack.sh > /dev/null
+grep "add_nova_opt \"logdir=$CURWD/log\"" stack.sh > /dev/null && true
 # "0" => found
 if [ "$?" -ne "0" ]; then
   sed -i "s,add_nova_opt \"verbose=True\",add_nova_opt \"verbose=True\"\nadd_nova_opt \"logdir=$CURWD/log\",g" stack.sh

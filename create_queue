@@ -1,7 +1,9 @@
+#!/usr/bin/python
+
 """
 X7 mq server function
 """
-from x7_mq import MqServer
+from  x7_start.server.x7_mq import MqServer
 
 qlist = [ { 'X7_Q':'X7_Q_W2S', 'X7_E':'X7_E_W2S', 'X7_RK':'X7_PK_W2S' },
 	  { 'X7_Q':'X7_Q_S2W', 'X7_E':'X7_E_S2W', 'X7_RK':'X7_PK_S2W' },
