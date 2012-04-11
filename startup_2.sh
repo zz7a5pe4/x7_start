@@ -105,7 +105,8 @@ tar xzf $CURWD/cache/devstack.tar.gz -C $CURWD/
 if [ ! -d  $CURWD/stack ]; then
   git clone git://github.com/zz7a5pe4/x7_dep.git $CURWD/stack
   rm -f $CURWD/cache/stack.tar.gz
-  tar czf $CURWD/cache/stack.tar.gz --exclude .git $CURWD/stack
+  cd $CURWD
+  tar czf $CURWD/cache/stack.tar.gz --exclude .git stack
 fi
 sudo rm -rf /opt/stack
 sudo cp -rf $CURWD/stack /opt
@@ -173,7 +174,8 @@ if [ -d $CURWD/cache/pip ];then
   done
 fi
 
-tar czf $CURWD/cache/pip.tar.gz --exclude "*.tar.gz" $CURWD/cache/pip
+cd $CURWD/cache 
+tar czf $CURWD/cache/pip.tar.gz --exclude "*.tar.gz" pip
 
 
 mkdir -p $CURWD/log/
@@ -192,6 +194,6 @@ fi
 ./stack.sh
 sudo mount -t nfs 127.0.0.1:/srv/instances /opt/stack/nova/instances
 cp -f $CURWD/localrc_compute_template $CURWD/localrc_compute
-sed -i "s|%HOSTADDR%|$SERVERADDR|g" $CURWD/localrc_compute
+sed -i "s|%SERVERADDR%|$HOSTADDR|g" $CURWD/localrc_compute
 
 exit 0
