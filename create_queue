@@ -1,0 +1,20 @@
+"""
+X7 mq server function
+"""
+from x7_mq import MqServer
+
+qlist = [ { 'X7_Q':'X7_Q_W2S', 'X7_E':'X7_E_W2S', 'X7_RK':'X7_PK_W2S' },
+	  { 'X7_Q':'X7_Q_S2W', 'X7_E':'X7_E_S2W', 'X7_RK':'X7_PK_S2W' },
+	  { 'X7_Q':'X7_Q_MW2S', 'X7_E':'X7_E_MW2S', 'X7_RK':'X7_PK_MW2S' },
+	  { 'X7_Q':'X7_Q_MS2W', 'X7_E':'X7_E_MS2W', 'X7_RK':'X7_PK_MS2W' },
+	  { 'X7_Q':'X7_Q_HW2S', 'X7_E':'X7_E_HW2S', 'X7_RK':'X7_PK_HW2S' },
+	  { 'X7_Q':'X7_Q_HS2W', 'X7_E':'X7_E_HS2W', 'X7_RK':'X7_PK_HS2W' }]
+
+
+if __name__ == '__main__':
+    for q in qlist:
+        mq_server = MqServer( None, q )
+        mq_server.create_queue();
+        mq_server.connect();
+
+
