@@ -7,4 +7,5 @@ localrc_compute
 stack/
 preseed.cfg
 ubuntu/
-
+*.swp
+HOSTADDR

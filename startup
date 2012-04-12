@@ -25,7 +25,7 @@ sudo inetd
 sudo apt-get update
 
 # installn dependent package
-sudo apt-get install -y --assume-yes git rabbitmq-server  python-kombu python-django python-paramiko
+sudo apt-get install -y --assume-yes git rabbitmq-server  python-kombu python-django python-paramiko python-setuptools
 # setup rabbitmq
 sudo rabbitmqctl  -q change_password guest guest
 

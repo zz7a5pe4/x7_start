@@ -44,6 +44,11 @@ def main(co):
     o = s.execute('/home/stack/start_compute.sh')
     for l in o:
         print l.rstrip()
+    x = open("HOSTADDR").readline().rstrip();
+    if x:
+    	o = s.execute("sudo mount -t nfs {0}:/srv/instances /opt/stack/nova/instances".format(x))
+    if(o):
+        print("mount errro");
     s.close()
 
 
