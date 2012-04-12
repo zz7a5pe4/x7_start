@@ -4,7 +4,7 @@
 set -e
 function trackme 
 {
-    #echo "$@" >> ./$$.cmd.log
+    $CURWD/notify_status.py "log" "$@"
     $@
     local EXIT_CODE=$?
     return $EXIT_CODE
@@ -29,15 +29,15 @@ CURWD=$X7WORKDIR
 MYID=`whoami`
 
 # ntp server
-sudo apt-get install -y ntp
+trackme sudo apt-get install -y ntp
 grep "server 127.127.1.0" /etc/ntp.conf > /dev/null && true
 if [ "$?" -ne "0" ]; then
-  sudo sed -i 's/server ntp.ubuntu.com/serverntp.ubuntu.com\nserver 127.127.1.0\nfudge 127.127.1.0 stratum 10/g' /etc/ntp.conf
+  trackme sudo sed -i 's/server ntp.ubuntu.com/serverntp.ubuntu.com\nserver 127.127.1.0\nfudge 127.127.1.0 stratum 10/g' /etc/ntp.conf
 fi
 sudo service ntp restart
 
 # prepare for pxe installation
-sudo apt-get install -y --assume-yes fai-quickstart
+trackme sudo apt-get install -y --assume-yes fai-quickstart
 
 # dhcp config
 cp -f $CONFDIR/etc/dhcp/dhcpd.conf.template $CONFDIR/etc/dhcp/dhcpd.conf
@@ -46,15 +46,15 @@ sed -i "s|%MASKADDR%|$MASKADDR|g" $CONFDIR/etc/dhcp/dhcpd.conf
 sed -i "s|%GATEWAY%|$GATEWAY|g" $CONFDIR/etc/dhcp/dhcpd.conf
 sed -i "s|%HOSTADDR%|$HOSTADDR|g" $CONFDIR/etc/dhcp/dhcpd.conf
 sudo cp -f $CONFDIR/etc/dhcp/dhcpd.conf /etc/dhcp/dhcpd.conf
-sudo /etc/init.d/isc-dhcp-server restart
+trackme sudo /etc/init.d/isc-dhcp-server restart
 
 
 # dns setup/config
 
 # tftp config
 cp -f $CONFDIR/etc/default/tftpd-hpa.template  $CONFDIR/etc/default/tftpd-hpa
-sudo cp -f $CONFDIR/etc/default/tftpd-hpa /etc/default/tftpd-hpa
-sudo /etc/init.d/tftpd-hpa restart
+trackme sudo cp -f $CONFDIR/etc/default/tftpd-hpa /etc/default/tftpd-hpa
+trackme sudo /etc/init.d/tftpd-hpa restart
 
 cp -f $CONFDIR/srv/tftp/vai/ubuntu-installer/amd64/boot-screens/txt.cfg.template $CONFDIR/srv/tftp/vai/ubuntu-installer/amd64/boot-screens/txt.cfg
 sed -i "s|%HOSTADDR%|$HOSTADDR|g" $CONFDIR/srv/tftp/vai/ubuntu-installer/amd64/boot-screens/txt.cfg
@@ -95,7 +95,7 @@ python -m SimpleHTTPServer 8888 &
 #devstack & openstack packages
 mkdir -p $CURWD/cache
 if [ ! -f $CURWD/cache/devstack.tar.gz ]; then
-  wget https://github.com/downloads/zz7a5pe4/x7_start/devstack.tar.gz -O $CURWD/cache/devstack.tar.gz
+  trackme wget https://github.com/downloads/zz7a5pe4/x7_start/devstack.tar.gz -O $CURWD/cache/devstack.tar.gz
 fi
 rm -rf $CURWD/devstack
 tar xzf $CURWD/cache/devstack.tar.gz -C $CURWD/
@@ -106,7 +106,7 @@ if [ ! -d  $CURWD/stack ]; then
   git clone git://github.com/zz7a5pe4/x7_dep.git $CURWD/stack
   rm -f $CURWD/cache/stack.tar.gz
   cd $CURWD
-  tar czf $CURWD/cache/stack.tar.gz --exclude .git stack
+  trackme tar czf $CURWD/cache/stack.tar.gz --exclude .git stack
 fi
 sudo rm -rf /opt/stack
 sudo cp -rf $CURWD/stack /opt
@@ -140,8 +140,8 @@ mkdir -p $CURWD/cache/pip
 
 # apt deb
 cd $CURWD/cache/apt
-apt-get download $PACKAGES
-sudo apt-get install --force-yes -y $PYDEP
+trackme apt-get download $PACKAGES
+trackme sudo apt-get install --force-yes -y $PYDEP
 
 # image and pip
 if [ -d /media/x7_usb/ ]; then
@@ -191,9 +191,11 @@ grep "add_nova_opt \"logdir=$CURWD/log\"" stack.sh > /dev/null && true
 if [ "$?" -ne "0" ]; then
   sed -i "s,add_nova_opt \"verbose=True\",add_nova_opt \"verbose=True\"\nadd_nova_opt \"logdir=$CURWD/log\",g" stack.sh
 fi
-./stack.sh
-sudo mount -t nfs 127.0.0.1:/srv/instances /opt/stack/nova/instances
+trackme ./stack.sh
+trackme sudo mount -t nfs 127.0.0.1:/srv/instances /opt/stack/nova/instances
 cp -f $CURWD/localrc_compute_template $CURWD/localrc_compute
 sed -i "s|%SERVERADDR%|$HOSTADDR|g" $CURWD/localrc_compute
+
+$CURWD/notify_status.py cmd complete
 
 exit 0
