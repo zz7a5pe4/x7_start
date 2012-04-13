@@ -22,6 +22,7 @@ echo ${HOSTADDR:?"empty host addr"}
 echo ${MASKADDR:?"empty mask addr"}
 echo ${GATEWAY:?"empty gateway"}
 echo ${NETWORK:?"empty network"}
+echo ${BRDADDR:?"empty broad addr"}
 
 export X7WORKDIR=`pwd`
 CONFDIR=$X7WORKDIR/conf
@@ -195,6 +196,7 @@ trackme ./stack.sh
 trackme sudo mount -t nfs 127.0.0.1:/srv/instances /opt/stack/nova/instances
 cp -f $CURWD/localrc_compute_template $CURWD/localrc_compute
 sed -i "s|%SERVERADDR%|$HOSTADDR|g" $CURWD/localrc_compute
+sed -i "s|%BRDADDR%|$BRDADDR|g" $CURWD/localrc_compute
 
 $CURWD/notify_status.py cmd complete
 
