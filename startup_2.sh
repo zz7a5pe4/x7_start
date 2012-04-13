@@ -198,6 +198,16 @@ cp -f $CURWD/localrc_compute_template $CURWD/localrc_compute
 sed -i "s|%SERVERADDR%|$HOSTADDR|g" $CURWD/localrc_compute
 sed -i "s|%BRDADDR%|$BRDADDR|g" $CURWD/localrc_compute
 
+#echo "change libvirt config for migrate"
+sudo sed -i  /etc/libvirt/libvirtd.conf -e "
+        s,#listen_tls = 0,listen_tls = 0,g;
+        s,#listen_tcp = 1,listen_tcp = 1,g;
+        s,#auth_tcp = \"sasl\",auth_tcp = \"none\",g;
+"
+
+sudo sed -i /etc/default/libvirt-bin -e "s,libvirtd_opts=\"-d\",libvirtd_opts=\" -d -l\",g"
+sudo /etc/init.d/libvirt-bin restart
+
 $CURWD/notify_status.py cmd complete
 
 exit 0

@@ -30,6 +30,21 @@ if [ -f $CURWD/pip.tar.gz ];then
     cd $CURWD/pip/$package && sudo python setup.py install && cd -
   done
 fi
+
+mkdir -p /home/stack/log
+sed -i "s,add_nova_opt \"verbose=True\",add_nova_opt \"verbose=True\"\nadd_nova_opt \"logdir=/home/stack/log\",g" stack.sh
+
 [ -d /opt/stack/nova/instances ] && sudo umount /opt/stack/nova/instances;
 cd $CURWD/devstack
 ./stack.sh
+#echo "change libvirt config for migrate"
+sudo sed -i  /etc/libvirt/libvirtd.conf -e "
+        s,#listen_tls = 0,listen_tls = 0,g;
+        s,#listen_tcp = 1,listen_tcp = 1,g;
+        s,#auth_tcp = \"sasl\",auth_tcp = \"none\",g;
+"
+
+sudo sed -i /etc/default/libvirt-bin -e "s,libvirtd_opts=\"-d\",libvirtd_opts=\" -d -l\",g"
+sudo /etc/init.d/libvirt-bin restart
+
+
