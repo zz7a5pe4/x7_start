@@ -32,7 +32,7 @@ if [ -f $CURWD/pip.tar.gz ];then
 fi
 
 mkdir -p /home/stack/log
-sed -i "s,add_nova_opt \"verbose=True\",add_nova_opt \"verbose=True\"\nadd_nova_opt \"logdir=/home/stack/log\",g" $CURWD/stack.sh
+sed -i "s,add_nova_opt \"verbose=True\",add_nova_opt \"verbose=True\"\nadd_nova_opt \"logdir=/home/stack/log\",g" $CURWD/devstack/stack.sh
 
 [ -d /opt/stack/nova/instances ] && sudo umount /opt/stack/nova/instances;
 cd $CURWD/devstack
