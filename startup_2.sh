@@ -76,13 +76,13 @@ sudo mkdir -p /srv/instances
 sudo chmod 777 /srv/instances
 grep "/srv/instances $HOSTADDR/24" /etc/exports > /dev/null  && true
 if [ "$?" -ne "0" ]; then
-    echo "/srv/instances $HOSTADDR/24(async,rw,no_subtree_check,no_root_squash)" | sudo tee -a /etc/exports > /dev/null
-    echo "/srv/instances 127.0.0.1(async,rw,no_subtree_check,no_root_squash)" | sudo tee -a  /etc/exports > /dev/null
+    echo "/srv/instances $HOSTADDR/24(sync,rw,fsid=0,no_subtree_check,no_root_squash)" | sudo tee -a /etc/exports > /dev/null
+    echo "/srv/instances 127.0.0.1(sync,rw,fsid=0,no_subtree_check,no_root_squash)" | sudo tee -a  /etc/exports > /dev/null
 else
     echo ""
 fi
 sudo /etc/init.d/nfs-kernel-server restart
-
+sudo /etc/init.d/idmapd restart
 mkdir -p $CURWD/www/ubuntu/
 if [ -f $CURWD/ubuntu-11.10-alternate-amd64.iso ]; then
   sudo mount -o loop $CURWD/ubuntu-11.10-alternate-amd64.iso $CURWD/www/ubuntu/
