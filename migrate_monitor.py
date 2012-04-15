@@ -4,7 +4,7 @@ X7 live migration monitor
 import sys, os, subprocess
 import time
 import nova_cmd
-from x7_mq import MqClient,  MqServer
+from  x7_start.server.x7_mq import MqServer, MqClient
 import simplejson
    
 def handle_message( pkg, message):
