@@ -19,29 +19,40 @@ def handle_message( pkg, message):
     params = simplejson.loads( pkg )
     # start migration
     instance = params["instance"]
-    nova_cmd.migrate(instance)
-
-    # - start migration - 
     print "\nstart migration ----------------------------- \n"
+    output = nova_cmd.migrate(instance,True)
+    out = output["err"]
+    exit_code = output["exit"]
+    if exit_code != 0:
+        print "nova_cmd.migrate(instance,True) != 0"
+        return 1 
+    print out
+    # - start migration - 
     end_time = time.time() + 120         # time limit in seconds
     interval = 2                          # in seconds
     while True:
         if (time.time() > end_time): 
             client.send( {"type": "cmd", "mesg": "error","memo":"migration: can't start migration","instance":instance} )
             return
+        print "timeout"
         vm = _get_vm(instance)
         if (vm == None): 
             client.send( {"type": "cmd", "mesg": "error","memo":"migration: unkown instance","instance":instance} )
+            print "vm == None"
             return
         vm_state = vm["Status"]
         print vm_state
         if(vm_state == "ACTIVE"):
+            print "ACTIVE"
             pass                         # wait to start
         elif(vm_state == "VERIFY_RESIZE"):
+            print "VERIFY_RESIZE"
             break                        # go to the next step
         elif(vm_state == "RESIZE"):
+            print "RESIZE"
             break                         # go to the next step
         else:
+            print ("else")
             client.send( {"type": "cmd", "mesg": "error","memo":"migration: " + vm_state,"instance":instance} )
             return
         time.sleep(interval)
@@ -52,21 +63,27 @@ def handle_message( pkg, message):
     interval = 2                          # in seconds
     while True:
         if (time.time() > end_time): 
+            print "timeout"
             client.send( {"type": "cmd", "mesg": "error","memo":"resize: time out","instance":instance} )
             return
         vm = _get_vm(instance)
         if (vm == None): 
+            print "vm == None"
             client.send( {"type": "cmd", "mesg": "error","memo":"resize: failed","instance":instance} )
             return
         vm_state = vm["Status"]
         if(vm_state == "ACTIVE"):
+            print "ACTIVE"
             client.send( {"type": "cmd", "mesg": "success","memo":"migration succeded","instance":instance} )
             return
         elif(vm_state == "VERIFY_RESIZE"):
+            print "VERIFY_RESIZE"
             break                        # go to the next step
         elif(vm_state == "RESIZE"):
+            print "RESIZE"
             pass                         # waiting
         else:
+            print "else"
             client.send( {"type": "cmd", "mesg": "error","memo":"resize: " + vm_state,"instance":instance} )
             return
         time.sleep(interval)
@@ -79,19 +96,24 @@ def handle_message( pkg, message):
     interval = 2                          # in seconds
     while True:
         if (time.time() > end_time): 
+            print "timeout"
             client.send( {"type": "cmd", "mesg": "error","memo":"verify_resize: time out","instance":instance} )
             return
         vm = _get_vm(instance)
         if (vm == None): 
+            print "vm == None"
             client.send( {"type": "cmd", "mesg": "error","memo":"verify_resize: failed","instance":instance} )
             return
         vm_state = vm["Status"]
         if(vm_state == "ACTIVE"):
+            print "RESIZE"
             client.send( {"type": "cmd", "mesg": "success","memo":"migration succeded","instance":instance} )
             return
         elif(vm_state == "VERIFY_RESIZE"):
+            print "VERIFY_RESIZE"
             pass                          # waiting
         else:
+            print "else"
             client.send( {"type": "cmd", "mesg": "error","memo":"verify_resize: " + vm_state,"instance":instance} )
             return
         time.sleep(interval)
@@ -99,16 +121,14 @@ def handle_message( pkg, message):
     return
 
 def _get_vm(instance):
-    nl = nova_cmd.nova_list()
-    vms = nl['out']
+    vms = nova_cmd.nova_list()
     for vm in vms:
         if(instance == vm["Name"] ):
             return vm
     return None
 
 def _get_vm_use_vm_list(instance):   # deprecated. backup
-    nl = nova_cmd.vm_list()
-    vms = nl['out']
+    vms = nova_cmd.vm_list()
     for vm in vms:
         if(instance == vm["instance"] ):
             return vm
