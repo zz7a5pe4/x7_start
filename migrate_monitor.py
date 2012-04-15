@@ -23,10 +23,10 @@ def handle_message( pkg, message):
     output = nova_cmd.migrate(instance,True)
     out = output["err"]
     exit_code = output["exit"]
+    print out
     if exit_code != 0:
         print "nova_cmd.migrate(instance,True) != 0"
         return 1 
-    print out
     # - start migration - 
     end_time = time.time() + 120         # time limit in seconds
     interval = 2                          # in seconds
