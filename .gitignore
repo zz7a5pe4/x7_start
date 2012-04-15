@@ -9,3 +9,5 @@ preseed.cfg
 ubuntu/
 *.swp
 HOSTADDR
+hosts
+
