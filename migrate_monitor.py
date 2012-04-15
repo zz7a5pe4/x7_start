@@ -17,9 +17,19 @@ def handle_message( pkg, message):
     # Acknowledge this message as being processed. This will remove the message from the queue.
     message.ack()
     params = simplejson.loads( pkg )
-    # start migration
+
+    # check if vm is active    
+
     instance = params["instance"]
-    print "\nstart migration ----------------------------- \n"
+    vm = _get_vm(instance)
+    if (vm != "ACTIVE"):
+        client.send( {"type": "cmd", "mesg": "error","memo":"Error: the state of the vm to migrate is not active. migration not initiated","instance":instance} )
+        print "Error: the state of the vm to migrate is not active. migration not initiated"
+        return 1
+
+    # start migration
+
+    print "\nstart migration ... \n"
     output = nova_cmd.migrate(instance,True)
     out = output["err"]
     exit_code = output["exit"]
@@ -27,23 +37,24 @@ def handle_message( pkg, message):
     if exit_code != 0:
         print "nova_cmd.migrate(instance,True) != 0"
         return 1 
-    # - start migration - 
     end_time = time.time() + 120         # time limit in seconds
     interval = 2                          # in seconds
+
+    # - active -
+    print "\n wait: active >>>>>> resize \n"
     while True:
         if (time.time() > end_time): 
             client.send( {"type": "cmd", "mesg": "error","memo":"migration: can't start migration","instance":instance} )
+            print "timeout"
             return
-        print "timeout"
         vm = _get_vm(instance)
         if (vm == None): 
             client.send( {"type": "cmd", "mesg": "error","memo":"migration: unkown instance","instance":instance} )
             print "vm == None"
             return
         vm_state = vm["Status"]
-        print vm_state
+        print "State:", vm_state
         if(vm_state == "ACTIVE"):
-            print "ACTIVE"
             pass                         # wait to start
         elif(vm_state == "VERIFY_RESIZE"):
             print "VERIFY_RESIZE"
@@ -52,13 +63,13 @@ def handle_message( pkg, message):
             print "RESIZE"
             break                         # go to the next step
         else:
-            print ("else")
+            print ("Error: unexpected state")
             client.send( {"type": "cmd", "mesg": "error","memo":"migration: " + vm_state,"instance":instance} )
-            return
+            return 1
         time.sleep(interval)
 
     # -resize -
-    print "\nresize ----------------------------- \n"
+    print "\n wait: resize >>>>>> verify_resize \n"
     end_time = time.time() + 1200         # time limit in seconds
     interval = 2                          # in seconds
     while True:
@@ -72,6 +83,7 @@ def handle_message( pkg, message):
             client.send( {"type": "cmd", "mesg": "error","memo":"resize: failed","instance":instance} )
             return
         vm_state = vm["Status"]
+        print "State:", vm_state
         if(vm_state == "ACTIVE"):
             print "ACTIVE"
             client.send( {"type": "cmd", "mesg": "success","memo":"migration succeded","instance":instance} )
@@ -89,9 +101,16 @@ def handle_message( pkg, message):
         time.sleep(interval)
 
     # - verify resize -
-    nova_cmd.resize_confirm(instance)
-    print "\nverify resize ----------------------------- \n"
+   
+    output =  nova_cmd.resize_confirm(instance)
+    out = output["err"]
+    exit_code = output["exit"]
+    print out
+    if exit_code != 0:
+        print "nnova_cmd.migrate(instance,True)"
+        return 1
 
+    print "\n wait: verify_resize >>>>>> active \n"
     end_time = time.time() + 120           # time limit in seconds
     interval = 2                          # in seconds
     while True:
@@ -105,6 +124,7 @@ def handle_message( pkg, message):
             client.send( {"type": "cmd", "mesg": "error","memo":"verify_resize: failed","instance":instance} )
             return
         vm_state = vm["Status"]
+        print "State:", vm_state
         if(vm_state == "ACTIVE"):
             print "RESIZE"
             client.send( {"type": "cmd", "mesg": "success","memo":"migration succeded","instance":instance} )
