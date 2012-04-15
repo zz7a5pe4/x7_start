@@ -210,6 +210,10 @@ sudo sed -i  /etc/libvirt/libvirtd.conf -e "
 sudo sed -i /etc/default/libvirt-bin -e "s,libvirtd_opts=\"-d\",libvirtd_opts=\" -d -l\",g"
 sudo /etc/init.d/libvirt-bin restart
 
+cd $CURWD/devstack
+source ./openrc admin admin
+python $CURWD/migrate_monitor.py &
+
 $CURWD/notify_status.py cmd complete
 
 exit 0
