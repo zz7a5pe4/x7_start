@@ -68,9 +68,10 @@ def migrate(instance,stderr=False):
     """
     p = subprocess.Popen(["nova", "migrate", instance], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     out, err = p.communicate()
+    exit_code = p.wait()
     if stderr:
         err_list = _get_err_list(err)
-        return {'out':[], 'err':err_list}
+        return {'out':[], 'err':err_list, 'exit':exit_code}
     else:
         return
 
