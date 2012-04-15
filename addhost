@@ -29,7 +29,7 @@ fi
 
 HEXNAME=`printf '%02X' ${2//./ }`
 
-sudo mkdir -p srv/tftp/vai/ubuntu-installer/amd64/pxelinux.cfg
+sudo mkdir -p /srv/tftp/vai/ubuntu-installer/amd64/pxelinux.cfg
 sudo ln -s ../boot-screens/syslinux.cfg /srv/tftp/vai/pxelinux.cfg/$HEXNAME && true
 sudo /etc/init.d/isc-dhcp-server restart
 sudo /etc/init.d/tftpd-hpa restart

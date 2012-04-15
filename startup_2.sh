@@ -33,7 +33,8 @@ MYID=`whoami`
 trackme sudo apt-get install -y ntp
 grep "server 127.127.1.0" /etc/ntp.conf > /dev/null && true
 if [ "$?" -ne "0" ]; then
-  trackme sudo sed -i 's/server ntp.ubuntu.com/serverntp.ubuntu.com\nserver 127.127.1.0\nfudge 127.127.1.0 stratum 10/g' /etc/ntp.conf
+  trackme echo "configure ntp"
+  sudo sed -i 's/server ntp.ubuntu.com/serverntp.ubuntu.com\nserver 127.127.1.0\nfudge 127.127.1.0 stratum 10/g' /etc/ntp.conf
 fi
 sudo service ntp restart
 
@@ -59,6 +60,7 @@ trackme sudo /etc/init.d/tftpd-hpa restart
 
 cp -f $CONFDIR/srv/tftp/vai/ubuntu-installer/amd64/boot-screens/txt.cfg.template $CONFDIR/srv/tftp/vai/ubuntu-installer/amd64/boot-screens/txt.cfg
 sed -i "s|%HOSTADDR%|$HOSTADDR|g" $CONFDIR/srv/tftp/vai/ubuntu-installer/amd64/boot-screens/txt.cfg
+sudo mkdir -p /srv/tftp
 sudo cp -rf $CONFDIR/srv/tftp/vai /srv/tftp/
 
 # preseed
