@@ -72,6 +72,7 @@ sed -i "s|%HOSTADDR%|$HOSTADDR|g" $CURWD/www/preseed.cfg
 cp $CONFDIR/etc/hosts.template $CONFDIR/etc/hosts
 sed -i "s|%HOSTADDR%|$HOSTADDR|g" $CONFDIR/etc/hosts
 sed -i "s|%HOSTNAME%|$HOSTNAME|g" $CONFDIR/etc/hosts
+sudo cp -rf $CONFDIR/etc/hosts /etc/hosts
 
 # nfs path prepare
 sudo mkdir -p /srv/instances
