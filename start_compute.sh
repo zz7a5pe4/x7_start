@@ -12,6 +12,9 @@ sudo apt-get install -y --force-yes  $PYDEP
 sudo apt-get install -y --force-yes nfs-common
 CURWD=/home/stack/
 
+cd $CURWD
+tar xzf ssh.tar.gz 
+
 sudo mkdir -p /opt
 sudo rm -rf /opt/stack
 sudo tar xzf $CURWD/stack.tar.gz -C /opt/
@@ -35,8 +38,7 @@ mkdir -p /home/stack/log
 sed -i "s,add_nova_opt \"verbose=True\",add_nova_opt \"verbose=True\"\nadd_nova_opt \"logdir=/home/stack/log\",g" $CURWD/devstack/stack.sh
 
 [ -d /opt/stack/nova/instances ] && sudo umount /opt/stack/nova/instances;
-cd $CURWD/devstack
-./stack.sh
+
 #echo "change libvirt config for migrate"
 sudo sed -i  /etc/libvirt/libvirtd.conf -e "
         s,#listen_tls = 0,listen_tls = 0,g;
@@ -47,4 +49,6 @@ sudo sed -i  /etc/libvirt/libvirtd.conf -e "
 sudo sed -i /etc/default/libvirt-bin -e "s,libvirtd_opts=\"-d\",libvirtd_opts=\" -d -l\",g"
 sudo /etc/init.d/libvirt-bin restart
 
+cd $CURWD/devstack
+./stack.sh
 

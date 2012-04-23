@@ -37,6 +37,7 @@ def main(co):
     s.put('imroot')
     s.put('localrc_compute')
     s.put('start_compute.sh')
+    s.put('ssh.tar.gz')
     s.execute("chmod +x imroot");
     o = s.execute('echo vai12345 | /home/stack/imroot')
     #print o

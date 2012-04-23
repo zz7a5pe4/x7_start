@@ -29,6 +29,14 @@ CONFDIR=$X7WORKDIR/conf
 CURWD=$X7WORKDIR
 MYID=`whoami`
 
+# ssh id/user setup
+if [ ! -f ~/.ssh/id_rsa ]; then
+  ssh-keygen -b 1024 -t rsa -P "" -f $HOME/.ssh/id_rsa
+fi
+cat $HOME/.ssh/id_rsa.pub  >> $HOME/.ssh/authorized_keys
+cd $HOME
+tar czf $CURWD/ssh.tar.gz .ssh/
+
 # ntp server
 trackme sudo apt-get install -y ntp
 grep "server 127.127.1.0" /etc/ntp.conf > /dev/null && true
@@ -102,7 +110,13 @@ if [ ! -f $CURWD/cache/devstack.tar.gz ]; then
   trackme wget https://github.com/downloads/zz7a5pe4/x7_start/devstack.tar.gz -O $CURWD/cache/devstack.tar.gz
 fi
 rm -rf $CURWD/devstack
-tar xzf $CURWD/cache/devstack.tar.gz -C $CURWD/
+tar xzf $CURWD/cache/devstack.tar.gz -C $CURWD/ 
+
+if [ ! -f $CURWD/cache/cirros-0.3.0-x86_64-uec.tar.gz ]; then
+  wget https://github.com/downloads/zz7a5pe4/x7_start/cirros-0.3.0-x86_64-uec.tar.gz -O $CURWD/cache/cirros-0.3.0-x86_64-uec.tar.gz
+fi
+cp -f $CURWD/cache/cirros-0.3.0-x86_64-uec.tar.gz $CURWD/devstack/files/cirros-0.3.0-x86_64-uec.tar.gz
+
 #wget https://github.com/downloads/zz7a5pe4/x7_start/stack.tar.gz -O $CURWD/cache/stack.tar.gz
 
 
@@ -196,6 +210,7 @@ if [ "$?" -ne "0" ]; then
   sed -i "s,add_nova_opt \"verbose=True\",add_nova_opt \"verbose=True\"\nadd_nova_opt \"logdir=$CURWD/log\",g" stack.sh
 fi
 trackme ./stack.sh
+sudo mkdir -p /opt/stack/nova/instances
 trackme sudo mount -t nfs 127.0.0.1:/srv/instances /opt/stack/nova/instances
 cp -f $CURWD/localrc_compute_template $CURWD/localrc_compute
 sed -i "s|%SERVERADDR%|$HOSTADDR|g" $CURWD/localrc_compute
