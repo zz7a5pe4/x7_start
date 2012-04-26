@@ -7,21 +7,24 @@ CONFDIR=$X7WORKDIR/conf
 CURWD=$X7WORKDIR
 
 # download dependency for git, rabbitmq, etc
-sudo apt-get update
-sudo apt-get install -y --assume-yes approx
+#sudo apt-get update
+#sudo apt-get install -y --assume-yes approx
+
+if [ -d $CURWD/ubuntu_repo ]; then
+  cp -f $CONFDIR/etc/apt/sources.list.template $CONFDIR/etc/apt/sources.list
+  sed -i "s|%HOSTADDR%|127.0.0.1|g" $CONFDIR/etc/apt/sources.list
+  if [ ! -f /etc/apt/sources.list.backup ]; then
+    sudo mv -f /etc/apt/sources.list /etc/apt/sources.list.backup
+  fi
+  sudo cp -f $CONFDIR/etc/apt/sources.list /etc/apt/sources.list 
+fi
 
 # approx setup
-cp -f $CONFDIR/etc/approx/approx.conf.template $CONFDIR/etc/approx/approx.conf
-cp -f $CONFDIR/etc/apt/sources.list.template $CONFDIR/etc/apt/sources.list
-sed -i "s|%HOSTADDR%|127.0.0.1|g" $CONFDIR/etc/apt/sources.list
-if [ ! -f /etc/apt/sources.list.backup ]; then
-    sudo mv -f /etc/apt/sources.list /etc/apt/sources.list.backup
-fi
-sudo cp -f $CONFDIR/etc/apt/sources.list /etc/apt/sources.list 
-sudo cp -f $CONFDIR/etc/approx/approx.conf /etc/approx/approx.conf
-
+#cp -f $CONFDIR/etc/approx/approx.conf.template $CONFDIR/etc/approx/approx.conf
+#sudo cp -f $CONFDIR/etc/approx/approx.conf /etc/approx/approx.conf
+#sudo apt-get update
 # approx through inetd
-sudo inetd
+#sudo inetd
 sudo apt-get update
 
 # installn dependent package
