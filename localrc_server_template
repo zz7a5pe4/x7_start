@@ -9,4 +9,4 @@ MYSQL_PASSWORD=gadmei
 RABBIT_PASSWORD=guest
 ADMIN_PASSWORD=gadmei
 SERVICE_PASSWORD=gadmei
-ENABLED_SERVICES=g-api,g-reg,key,n-api,n-crt,n-obj,n-net,n-vol,n-sch,,n-novnc,n-xvnc,n-cauth,horizon,mysql,rabbit
+ENABLED_SERVICES=g-api,g-reg,key,n-api,n-crt,n-obj,n-net,n-vol,n-sch,n-cauth,horizon,mysql,rabbit
